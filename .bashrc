@@ -2,9 +2,7 @@
 export GNUPGHOME=~/.var/gnupg
 export MAIN_SSH_KEY=~/.ssh/id_ed25519_sk
 export BASHRC=~/.bashrc
-
-export WINEPREFIX=${HOME}/Programs/winedefault
-export HISTFILE="~/.local/.bash_history"
+export LC_ALL=C.UTF-8
 
 
 function prompt_timer_start {
@@ -56,7 +54,7 @@ function prompt_timer_stop {
 
 
     PS1+=" \e[0;34m${TIMER_SHOW} "
-    PS1+=" \[\e[0m\n\]${PSCHAR} "
+    PS1+=" \e[0m\n${PSCHAR} "
 }
 
 trap 'echo -ne "\033]0;$USER@$HOSTNAME:$PWD\a"; prompt_timer_start "$BASH_COMMAND (`date +%H:%M:%S`)"' DEBUG
@@ -83,11 +81,6 @@ alias mkdir='mkdir -pv'
 alias diff='colordiff'
 alias sudosu='sudo -i bash --rcfidle ~/.bashrc'
 
-ssh() {
-    PUB_KEY=$(cat $MAIN_SSH_KEY)
-    RC=$(cat $BASHRC | base64 -w0)
-    /usr/bin/ssh -t $@ "echo && mkdir -p .ssh && echo $PUB_KEY > .ssh/authorized_keys && echo $RC | base64 -d > .bashrc && bash -l"
-}
 
 sudo() {
     if [[ $@ == "su" ]]; then
@@ -97,7 +90,4 @@ sudo() {
     fi
 }
 
-bind '\C-p:history-search-backward'
-bind '\C-n":history-search-forward'
 bind '\C-H":backward-kill-word'
-
